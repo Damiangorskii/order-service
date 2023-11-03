@@ -1,0 +1,18 @@
+server:
+  port: 8085
+  error:
+    include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    com.example.orderservice: DEBUG

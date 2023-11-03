@@ -1,0 +1,41 @@
+# Spring Boot
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Logs
+logs/
+
+# IDE-specific files
+*.iml
+*.ipr
+*.iws
+
+# Compiled bytecode
+*.class
+
+# Dependencies
+/target/
+/lib/
+
+# Gradle
+.gradle/
+build/
+
+# Maven
+.m2/
+
+# Logs
+log/
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
