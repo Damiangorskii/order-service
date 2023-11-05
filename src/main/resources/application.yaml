@@ -12,6 +12,20 @@ management:
     health:
       show-details: always
 
+internal:
+  api:
+    shopping-service:
+      url: http://localhost:8084/shopping/cart
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: order
+      username: order-service
+      password: Password123!
+
 logging:
   level:
     root: INFO
