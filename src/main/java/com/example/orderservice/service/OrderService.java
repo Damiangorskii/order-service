@@ -5,12 +5,18 @@ import com.example.orderservice.model.CustomerInfo;
 import com.example.orderservice.model.DeliveryInfo;
 import com.example.orderservice.model.Order;
 import com.example.orderservice.repository.OrderRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,6 +26,7 @@ public class OrderService {
     public static final String ORDER_NOT_FOUND = "Order not found";
     private final OrderRepository orderRepository;
     private final ShoppingClient shoppingClient;
+    private final ObjectMapper objectMapper;
 
     public Mono<Order> createOrder(final UUID cartId, final CustomerInfo customerInfo, final DeliveryInfo deliveryInfo) {
         return shoppingClient.getShoppingCart(cartId)
@@ -51,10 +58,34 @@ public class OrderService {
                 .flatMap(orderRepository::save);
     }
 
+    public Flux<Order> uploadProducts(final FilePart filePart) {
+        return DataBufferUtils.join(filePart.content())
+                .flatMapMany(dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    DataBufferUtils.release(dataBuffer);
+                    try {
+                        return Flux.fromIterable(
+                                objectMapper.readValue(bytes, new TypeReference<List<Order>>() {
+                                })
+                        );
+                    } catch (Exception e) {
+                        return Flux.error(e);
+                    }
+                })
+                .map(this::setOrderId)
+                .flatMap(orderRepository::save);
+    }
+
     private Order payForOrder(final Order order) {
         if (!order.isPaid()) {
             order.setPaid(true);
         }
+        return order;
+    }
+
+    private Order setOrderId(final Order order) {
+        order.setOrderId(UUID.randomUUID());
         return order;
     }
 }

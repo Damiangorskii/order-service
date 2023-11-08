@@ -4,16 +4,23 @@ package com.example.orderservice.service;
 import com.example.orderservice.client.ShoppingClient;
 import com.example.orderservice.model.*;
 import com.example.orderservice.repository.OrderRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -124,12 +131,18 @@ class OrderServiceTest {
     @Mock
     private ShoppingClient shoppingClient;
 
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private FilePart filePart;
+
     private OrderService orderService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        orderService = new OrderService(orderRepository, shoppingClient);
+        orderService = new OrderService(orderRepository, shoppingClient, objectMapper);
     }
 
     @Test
@@ -296,6 +309,30 @@ class OrderServiceTest {
                             .hasMessage("500 INTERNAL_SERVER_ERROR \"Some error\"");
                 })
                 .verify();
+    }
+
+    @Test
+    void should_upload_orders() throws Exception {
+        String jsonContent = "[{\"orderId\":\"...\", ...}]";
+        List<Order> orders = List.of(
+                ORDER,
+                FINALIZED_ORDER
+        );
+
+        DefaultDataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();
+        when(filePart.content()).thenReturn(Flux.just(dataBufferFactory.wrap(jsonContent.getBytes(StandardCharsets.UTF_8))));
+
+        when(objectMapper.readValue(any(byte[].class), any(TypeReference.class))).thenReturn(orders);
+
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
+
+        orderService.uploadProducts(filePart)
+                .as(StepVerifier::create)
+                .expectSubscription()
+                .expectNextCount(orders.size())
+                .verifyComplete();
+
+        orders.forEach(order -> Mockito.verify(orderRepository).save(order));
     }
 
 }
