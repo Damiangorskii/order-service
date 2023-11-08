@@ -15,12 +15,12 @@ management:
 internal:
   api:
     shopping-service:
-      url: http://localhost:8084/shopping/cart
+      url: http://shopping-service:8084/shopping/cart
 
 spring:
   data:
     mongodb:
-      host: localhost
+      host: mongodb
       port: 27017
       database: order
       username: order-service
