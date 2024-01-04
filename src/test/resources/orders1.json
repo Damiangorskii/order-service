@@ -41,13 +41,13 @@
       }
     ],
     "customerInfo": {
-      "firstName": "Damian",
-      "lastName": "Gorski",
-      "email": "test@test.com",
+      "firstName": "Joe",
+      "lastName": "Doe",
+      "email": "joedoe@test.com",
       "phoneNumber": "444555666"
     },
     "deliveryInfo": {
-      "address": "ul. elo elo 3",
+      "address": "ul. Mickiewicza 3",
       "city": "Gdansk",
       "postalCode": "44444",
       "country": "Poland"
@@ -96,13 +96,13 @@
       }
     ],
     "customerInfo": {
-      "firstName": "Damian2",
-      "lastName": "Gorski",
-      "email": "test@test.com",
+      "firstName": "Joe",
+      "lastName": "Doe",
+      "email": "joedoe@test.com",
       "phoneNumber": "444555666"
     },
     "deliveryInfo": {
-      "address": "ul. elo elo 3",
+      "address": "ul. Mickiewicza 3",
       "city": "Gdansk",
       "postalCode": "44444",
       "country": "Poland"
@@ -151,13 +151,13 @@
       }
     ],
     "customerInfo": {
-      "firstName": "Damian3",
-      "lastName": "Gorski",
-      "email": "test@test.com",
+      "firstName": "Joe",
+      "lastName": "Doe",
+      "email": "joedoe@test.com",
       "phoneNumber": "444555666"
     },
     "deliveryInfo": {
-      "address": "ul. elo elo 3",
+      "address": "ul. Mickiewicza 3",
       "city": "Gdansk",
       "postalCode": "44444",
       "country": "Poland"
