@@ -63,20 +63,23 @@ public class OrderService {
 
     public Flux<Order> uploadProducts(final FilePart filePart) {
         return DataBufferUtils.join(filePart.content())
-                .flatMapMany(dataBuffer -> {
-                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
-                    dataBuffer.read(bytes);
-                    DataBufferUtils.release(dataBuffer);
-                    try {
-                        return Flux.fromIterable(
-                                objectMapper.readValue(bytes, new TypeReference<List<Order>>() {
-                                })
-                        );
-                    } catch (Exception e) {
-                        return Flux.error(e);
-                    }
-                })
-                .map(this::setOrderId)
+                .flatMapMany(dataBuffer -> Flux.using(
+                        () -> dataBuffer,
+                        buffer -> {
+                            byte[] bytes = new byte[buffer.readableByteCount()];
+                            buffer.read(bytes);
+                            try {
+                                return Flux.fromIterable(
+                                        objectMapper.readValue(bytes, new TypeReference<List<Order>>() {
+                                        })
+                                );
+                            } catch (Exception e) {
+                                return Flux.error(e);
+                            }
+                        },
+                        DataBufferUtils::release
+                ))
+                .map(this::setOrderIdAndInsertDateTime)
                 .flatMap(orderRepository::save);
     }
 
@@ -92,8 +95,9 @@ public class OrderService {
         return order;
     }
 
-    private Order setOrderId(final Order order) {
+    private Order setOrderIdAndInsertDateTime(final Order order) {
         order.setOrderId(UUID.randomUUID());
+        order.setInsertDateTime(LocalDateTime.now());
         return order;
     }
 }
