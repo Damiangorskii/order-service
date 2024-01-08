@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import reactor.test.StepVerifier;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ class OrderRepositoryTestIT {
     @Test
     void should_find_order_by_orderId() {
         UUID orderId = UUID.randomUUID();
-        orderRepository.save(new Order(orderId, Collections.emptyList(), new CustomerInfo(), new DeliveryInfo(), false)).block();
+        orderRepository.save(new Order(orderId, Collections.emptyList(), new CustomerInfo(), new DeliveryInfo(), false, LocalDateTime.now())).block();
 
         orderRepository.findOrderByOrderId(orderId)
                 .as(StepVerifier::create)
@@ -32,7 +33,7 @@ class OrderRepositoryTestIT {
     @Test
     void should_delete_order_by_orderId() {
         UUID orderId = UUID.randomUUID();
-        orderRepository.save(new Order(orderId, Collections.emptyList(), new CustomerInfo(), new DeliveryInfo(), false)).block();
+        orderRepository.save(new Order(orderId, Collections.emptyList(), new CustomerInfo(), new DeliveryInfo(), false, LocalDateTime.now())).block();
 
         orderRepository.deleteOrderByOrderId(orderId)
                 .as(StepVerifier::create)

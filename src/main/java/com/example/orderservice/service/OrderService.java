@@ -16,6 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +37,8 @@ public class OrderService {
                         shoppingCart.getProducts(),
                         customerInfo,
                         deliveryInfo,
-                        false
+                        false,
+                        LocalDateTime.now()
                 ))
                 .flatMap(orderRepository::save);
     }
@@ -75,6 +78,11 @@ public class OrderService {
                 })
                 .map(this::setOrderId)
                 .flatMap(orderRepository::save);
+    }
+
+    public Mono<Void> deleteOldOrders() {
+        LocalDateTime oneMinuteAgo = LocalDateTime.now(ZoneId.systemDefault()).minusMinutes(1);
+        return orderRepository.deleteByInsertDateTimeBefore(oneMinuteAgo);
     }
 
     private Order payForOrder(final Order order) {

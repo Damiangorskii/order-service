@@ -262,7 +262,7 @@ class OrderControllerTest {
     @Test
     void should_return_success_for_orders_upload() {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("file", new ClassPathResource("orders.json"));
+        builder.part("file", new ClassPathResource("orders1.json"));
         when(orderService.uploadProducts(any()))
                 .thenReturn(Flux.just(ORDER));
 

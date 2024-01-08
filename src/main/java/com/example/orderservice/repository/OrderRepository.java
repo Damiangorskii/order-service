@@ -4,6 +4,7 @@ import com.example.orderservice.model.Order;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface OrderRepository extends ReactiveMongoRepository<Order, String> {
@@ -12,4 +13,5 @@ public interface OrderRepository extends ReactiveMongoRepository<Order, String> 
 
     Mono<Void> deleteOrderByOrderId(UUID orderId);
 
+    Mono<Void> deleteByInsertDateTimeBefore(LocalDateTime time);
 }
