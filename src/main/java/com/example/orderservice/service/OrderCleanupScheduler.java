@@ -14,7 +14,7 @@ public class OrderCleanupScheduler {
 
     private final OrderService orderService;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0/3 * * * *")
     public void cleanUpOldOrders() {
         orderService.deleteOldOrders()
                 .doOnSuccess(s -> log.info("Successfully removed old orders"))

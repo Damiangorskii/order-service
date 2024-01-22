@@ -4,7 +4,7 @@ import com.example.orderservice.client.ShoppingClient;
 import com.example.orderservice.model.CustomerInfo;
 import com.example.orderservice.model.DeliveryInfo;
 import com.example.orderservice.model.Order;
-import com.example.orderservice.repository.OrderRepository;
+import com.example.orderservice.repository.ReactiveOrderRepositoryAdapter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ import java.util.UUID;
 public class OrderService {
 
     public static final String ORDER_NOT_FOUND = "Order not found";
-    private final OrderRepository orderRepository;
+    private final ReactiveOrderRepositoryAdapter orderRepository;
     private final ShoppingClient shoppingClient;
     private final ObjectMapper objectMapper;
 

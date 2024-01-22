@@ -1,17 +1,17 @@
 package com.example.orderservice.repository;
 
 import com.example.orderservice.model.Order;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
-public interface OrderRepository extends ReactiveMongoRepository<Order, String> {
+public interface OrderRepository extends MongoRepository<Order, String> {
 
-    Mono<Order> findOrderByOrderId(UUID orderId);
+    Optional<Order> findOrderByOrderId(UUID orderId);
 
-    Mono<Void> deleteOrderByOrderId(UUID orderId);
+    void deleteOrderByOrderId(UUID orderId);
 
-    Mono<Void> deleteByInsertDateTimeBefore(LocalDateTime time);
+    void deleteByInsertDateTimeBefore(LocalDateTime time);
 }

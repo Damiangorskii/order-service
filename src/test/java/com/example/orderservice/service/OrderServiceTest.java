@@ -3,7 +3,7 @@ package com.example.orderservice.service;
 
 import com.example.orderservice.client.ShoppingClient;
 import com.example.orderservice.model.*;
-import com.example.orderservice.repository.OrderRepository;
+import com.example.orderservice.repository.ReactiveOrderRepositoryAdapter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -126,7 +126,7 @@ class OrderServiceTest {
             .build();
 
     @Mock
-    private OrderRepository orderRepository;
+    private ReactiveOrderRepositoryAdapter orderRepository;
 
     @Mock
     private ShoppingClient shoppingClient;
